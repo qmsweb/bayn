@@ -38,7 +38,7 @@
     }
 
     /* =========================================
-       1. التوب بار (كما هو تماماً)
+       1. التوب بار 
        ========================================= */
     header {
       background-color: #0e6666;
@@ -135,7 +135,7 @@
       justify-content: center;
       position: relative;
       overflow: hidden;
-      cursor: pointer; /* افتراضي للروابط */
+      cursor: pointer;
     }
 
     /* تنسيق خاص للبطاقات غير الفعالة (بدون رابط) */
@@ -145,8 +145,8 @@
     }
     
     .tool-card.disabled:hover {
-      transform: none; /* إلغاء حركة الرفع */
-      box-shadow: var(--shadow-sm); /* إلغاء ظل الهوفر */
+      transform: none; 
+      box-shadow: var(--shadow-sm); 
       border-color: rgba(14, 102, 102, 0.05);
     }
 
@@ -199,7 +199,7 @@
       display: inline-block;
     }
 
-    /* تأثيرات الهوفر (فقط للبطاقات الفعالة) */
+    /* تأثيرات الهوفر */
     .tool-card:not(.disabled):hover {
       transform: translateY(-8px);
       box-shadow: var(--shadow-md);
@@ -220,7 +220,7 @@
     }
 
     /* =========================================
-       3. الفوتر (كما هو تماماً)
+       3. الفوتر 
        ========================================= */
     footer {
       background-color: #eafafa;
@@ -246,13 +246,118 @@
       .tools-grid { gap: 20px; }
       .tool-card { padding: 30px 20px; }
     }
+
+    /* =========================================
+       4. القائمة الجانبية (Sidebar Menu)
+       ========================================= */
+    .menu-btn {
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 5px;
+    }
+    
+    header .menu-btn svg {
+      stroke: #ffffff;
+    }
+
+    .sidebar-menu {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: 100%;
+      height: 100vh;
+      background-color: #ffffff;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-20px);
+      transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
+    }
+
+    .sidebar-menu.active {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    .sidebar-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 25px;
+    }
+
+    .sidebar-header img {
+      height: 45px;
+      border-radius: 10px;
+    }
+
+    .sidebar-header .close-btn svg {
+      stroke: var(--primary-color);
+    }
+
+    .sidebar-nav {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 35px;
+    }
+
+    .sidebar-nav a {
+      color: var(--primary-color);
+      text-decoration: none;
+      font-size: 1.8rem;
+      font-weight: 700;
+      transition: color 0.3s ease, transform 0.3s ease;
+    }
+
+    .sidebar-nav a:hover {
+      color: var(--secondary-color);
+      transform: scale(1.05);
+    }
   </style>
 </head>
 
 <body>
   <header>
     <img src="images/logo.PNG" alt="شعار بين">
+    <!-- زر فتح القائمة الجانبية -->
+    <button id="openMenu" class="menu-btn" aria-label="افتح القائمة">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="30" height="30" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" fill="none">
+        <line x1="3" y1="12" x2="21" y2="12"></line>
+        <line x1="3" y1="6" x2="21" y2="6"></line>
+        <line x1="3" y1="18" x2="21" y2="18"></line>
+      </svg>
+    </button>
   </header>
+
+  <!-- نافذة القائمة الجانبية -->
+  <div id="sidebar" class="sidebar-menu">
+    <div class="sidebar-header">
+      <img src="images/logo-black.PNG" alt="شعار بين">
+      <!-- زر إغلاق القائمة الجانبية -->
+      <button id="closeMenu" class="menu-btn close-btn" aria-label="أغلق القائمة">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="30" height="30" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" fill="none">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="index.html">الرئيسية</a>
+      <a href="about.html">عن المشروع</a>
+      <a href="tools.html">أدوات أخرى</a>
+      <a href="contact.html">اتصل بنا</a>
+    </nav>
+  </div>
 
   <div class="container">
     
@@ -317,6 +422,7 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', function() {
+      // الأنيميشن الخاص بالبطاقات
       const cards = document.querySelectorAll('.tool-card');
       const hero = document.querySelector('.hero-section');
       
@@ -338,6 +444,21 @@
           card.style.opacity = '1';
           card.style.transform = 'translateY(0)';
         }, 100);
+      });
+
+      // وظائف القائمة الجانبية المضافة حديثاً
+      const openMenuBtn = document.getElementById('openMenu');
+      const closeMenuBtn = document.getElementById('closeMenu');
+      const sidebar = document.getElementById('sidebar');
+
+      openMenuBtn.addEventListener('click', () => {
+        sidebar.classList.add('active');
+        document.body.style.overflow = 'hidden'; // إخفاء شريط التمرير عند الفتح
+      });
+
+      closeMenuBtn.addEventListener('click', () => {
+        sidebar.classList.remove('active');
+        document.body.style.overflow = ''; // استعادة شريط التمرير
       });
     });
   </script>
